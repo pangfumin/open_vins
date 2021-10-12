@@ -421,33 +421,36 @@ void Simulator::load_data(std::string path_traj) {
     // }
 
     // for euroc
-    std::getline(s, field, ',');
-    uint64 ts_ns = std::atoll(field.c_str());
-    int64_t sec = std::stoi(field.substr(0,10));
-    int64_t nsec = std::stoi(field.substr(10,9));
-    auto cur_ts = ros::Time(sec, nsec);
-    std::getline(s, field, ',');
+    char separator = ' ';
+    std::getline(s, field, separator);
+    // uint64 ts_ns = std::atoll(field.c_str());
+    // int64_t sec = std::stoi(field.substr(0,10));
+    // int64_t nsec = std::stoi(field.substr(10,9));
+    auto cur_ts = std::atof(field.c_str());
+    std::getline(s, field, separator);
     double px = std::atof(field.c_str());
 
-      std::getline(s, field, ',');
+      std::getline(s, field, separator);
     double py = std::atof(field.c_str());
 
-      std::getline(s, field, ',');
+      std::getline(s, field, separator);
     double pz = std::atof(field.c_str());
 
-      std::getline(s, field, ',');
-    double qw = std::atof(field.c_str());
+      
 
-      std::getline(s, field, ',');
+      std::getline(s, field, separator);
     double qx = std::atof(field.c_str());
 
-      std::getline(s, field, ',');
+      std::getline(s, field, separator);
     double qy = std::atof(field.c_str());
 
-      std::getline(s, field, ',');
+      std::getline(s, field, separator);
     double qz = std::atof(field.c_str());
 
-    data << cur_ts.toSec(), px, py, pz, qx, qy,qz,qw;
+    std::getline(s, field, separator);
+    double qw = std::atof(field.c_str());
+
+    data << cur_ts, px, py, pz, qx, qy,qz,qw;
 
     // Only a valid line if we have all the parameters
     // if (i > 7) {

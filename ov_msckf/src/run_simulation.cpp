@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
   std::vector<int> buffer_camids;
   std::vector<std::vector<std::pair<size_t, Eigen::VectorXf>>> buffer_feats;
 
-  std::string sim_imu_file = "/home/nio/imu.txt";
+  std::string sim_imu_file = "/home/pang/imu.txt";
   std::ofstream sim_imu_ofs(sim_imu_file);
   // Step through the rosbag
   signal(SIGINT, signal_callback_handler);
@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
       viz->visualize_odometry(message_imu.timestamp);
 #endif
 
-      sim_imu_ofs << ros::Time(message_imu.timestamp).toNSec() << "," << message_imu.wm[0] << "," << message_imu.wm[1] << "," << message_imu.wm[2]
+      sim_imu_ofs << ros::Time(message_imu.timestamp) << "," << message_imu.wm[0] << "," << message_imu.wm[1] << "," << message_imu.wm[2]
                   << "," << message_imu.am[0] << "," << message_imu.am[1] << "," << message_imu.am[2] << std::endl;
 
     }
