@@ -20,6 +20,7 @@
  */
 
 #include "Simulator.h"
+#include <ros/time.h>
 
 using namespace ov_msckf;
 
@@ -409,21 +410,50 @@ void Simulator::load_data(std::string path_traj) {
     std::string field;
     Eigen::Matrix<double, 8, 1> data;
 
-    // Loop through this line (timestamp(s) tx ty tz qx qy qz qw)
-    while (std::getline(s, field, ' ')) {
-      // Skip if empty
-      if (field.empty() || i >= data.rows())
-        continue;
-      // save the data to our vector
-      data(i) = std::atof(field.c_str());
-      i++;
-    }
+    // // Loop through this line (timestamp(s) tx ty tz qx qy qz qw)
+    // while (std::getline(s, field, ' ')) {
+    //   // Skip if empty
+    //   if (field.empty() || i >= data.rows())
+    //     continue;
+    //   // save the data to our vector
+    //   data(i) = std::atof(field.c_str());
+    //   i++;
+    // }
+
+    // for euroc
+    std::getline(s, field, ',');
+    uint64 ts_ns = std::atoll(field.c_str());
+    int64_t sec = std::stoi(field.substr(0,10));
+    int64_t nsec = std::stoi(field.substr(10,9));
+    auto cur_ts = ros::Time(sec, nsec);
+    std::getline(s, field, ',');
+    double px = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double py = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double pz = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double qw = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double qx = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double qy = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double qz = std::atof(field.c_str());
+
+    data << cur_ts.toSec(), px, py, pz, qx, qy,qz,qw;
 
     // Only a valid line if we have all the parameters
-    if (i > 7) {
+    // if (i > 7) {
       traj_data.push_back(data);
       // std::cout << std::setprecision(15) << data.transpose() << std::endl;
-    }
+    // }
   }
 
   // Finally close the file
