@@ -422,32 +422,58 @@ void Simulator::load_data(std::string path_traj) {
 
     // for euroc
     std::getline(s, field, ',');
-    uint64 ts_ns = std::atoll(field.c_str());
-    int64_t sec = std::stoi(field.substr(0,10));
-    int64_t nsec = std::stoi(field.substr(10,9));
-    auto cur_ts = ros::Time(sec, nsec);
+    double ts = std::atof(field.c_str());
     std::getline(s, field, ',');
-    double px = std::atof(field.c_str());
+    double T00 = std::atof(field.c_str());
 
       std::getline(s, field, ',');
-    double py = std::atof(field.c_str());
+    double T01 = std::atof(field.c_str());
 
       std::getline(s, field, ',');
-    double pz = std::atof(field.c_str());
+    double T02 = std::atof(field.c_str());
 
       std::getline(s, field, ',');
-    double qw = std::atof(field.c_str());
+    double T03 = std::atof(field.c_str());
 
       std::getline(s, field, ',');
-    double qx = std::atof(field.c_str());
+    double T10 = std::atof(field.c_str());
 
       std::getline(s, field, ',');
-    double qy = std::atof(field.c_str());
+    double T11 = std::atof(field.c_str());
 
       std::getline(s, field, ',');
-    double qz = std::atof(field.c_str());
+    double T12 = std::atof(field.c_str());
 
-    data << cur_ts.toSec(), px, py, pz, qx, qy,qz,qw;
+
+      std::getline(s, field, ',');
+    double T13 = std::atof(field.c_str());
+
+          std::getline(s, field, ',');
+    double T20 = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double T21 = std::atof(field.c_str());
+
+      std::getline(s, field, ',');
+    double T22 = std::atof(field.c_str());
+
+
+      std::getline(s, field, ',');
+    double T23 = std::atof(field.c_str());
+
+    Eigen::Matrix4d T = Eigen::Matrix4d::Identity();
+    T << T00, T01, T02, T03,
+    T10, T11, T12, T13,
+    T20, T21, T22, T23,
+    0,0,0,1;
+
+    Eigen::Matrix3d R = T.topLeftCorner(3,3);
+    Eigen::Quaterniond q(R);
+    Eigen::Vector3d t = T.topRightCorner(3,1);
+    data << ts, t[0], t[1], t[2], q.x(), q.y(), q.z(), q.w();
+
+    std::cout << "T : " << T << std::endl;
+    std::cout << "data: " << s.str() << std::endl; 
 
     // Only a valid line if we have all the parameters
     // if (i > 7) {
